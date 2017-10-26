@@ -6,11 +6,9 @@ import scala.meta._
 final case class Reponame_v1_0(index: SemanticdbIndex)
     extends SemanticRule(index, "Reponame_v1_0") {
 
- //52.55
-
   def fixCoproduc(ctx: RuleCtx): Patch =
-     ctx.replaceSymbol()
-  def fixLitInt(ctx: RuleCtx) : Patch 
+    ctx.replaceSymbols("_root_.cats.data.Coproduct." -> "_root_.cats.data.EitherK.")
+  def fixLitInt(ctx: RuleCtx) : Patch =
     ctx.tree.collect {
       case t @ Lit.Int(value) =>
         //ctx.removeTokens(t.tokens) + ctx.addRight(t, (value+1).toString)
@@ -18,6 +16,9 @@ final case class Reponame_v1_0(index: SemanticdbIndex)
     }.asPatch
 
   override def fix(ctx: RuleCtx): Patch = {
+//    ctx.tree.collect{
+//      case n @ Name("Coproduct") => println(index.symbol(n))
+//    }
     fixLitInt(ctx) + fixCoproduc(ctx)
   }
 
